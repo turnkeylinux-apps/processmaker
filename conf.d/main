@@ -1,0 +1,8 @@
+#!/bin/sh -ex
+
+ADMIN_NAME=admin
+ADMIN_PASS=turnkey
+
+SRC=/usr/local/src
+WEBROOT=/var/www/processmaker
+
