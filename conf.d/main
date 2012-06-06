@@ -23,3 +23,45 @@ a2ensite processmaker
 a2enmod rewrite
 a2enmod deflate
 
+# start services
+/etc/init.d/mysql start
+/etc/init.d/apache2 start
+
+# curl based install
+P_CONFIG=$(echo $WEBROOT/workflow/engine/config/ | sed "s|\/|%2F|g")
+P_LANGUAGES=$(echo $WEBROOT/workflow/engine/content/languages/ | sed "s|\/|%2F|g")
+P_PLUGINS=$(echo $WEBROOT/workflow/engine/plugins/ | sed "s|\/|%2F|g")
+P_XMLFORMS=$(echo $WEBROOT/workflow/engine/xmlform/ | sed "s|\/|%2F|g")
+P_SHARED=$(echo $WEBROOT/shared/ | sed "s|\/|%2F|g")
+P_LOGFILE=$(echo $WEBROOT/shared/log/install.log | sed "s|\/|%2F|g")
+P_PUBLIC=$(echo $WEBROOT/workflow/public_html/index.html | sed "s|\/|%2F|g")
+
+P_PATHS="pathConfig=$P_CONFIG&pathLanguages=$P_LANGUAGES&pathPlugins=$P_PLUGINS&pathXmlforms=$P_XMLFORMS&pathShared=$P_SHARED&pathLogFile=$P_LOGFILE&pathPublic=$P_PUBLIC"
+P_DBCONN="db_engine=mysql&db_hostname=localhost&db_username=root&db_password=$MYSQL_PASS&db_port=3306"
+P_DBBASE="wfDatabase=wf_workflow&rbDatabase=rb_workflow&rpDatabase=rp_workflow"
+
+URL="http://127.0.0.1/sys/en/classic/login"
+CURL="curl -c /tmp/cookie -b /tmp/cookie"
+
+$CURL ${URL}
+$CURL ${URL}/getSystemInfo --data "clientBrowser=Unknown"
+$CURL ${URL}/getPermissionInfo --data "$P_PATHS"
+$CURL ${URL}/getEngines --data ""
+$CURL ${URL}/testConnection --data "$P_DBCONN"
+$CURL ${URL}/checkDatabases --data "$P_DBCONN&$P_DBBASE"
+$CURL ${URL}/createWorkspace --data "$P_PATHS&$P_DBCONN&$P_DBBASE&workspace=workflow&adminUsername=$ADMIN_NAME&adminPassword=$ADMIN_PASS&deleteDB=false"
+
+rm -f /tmp/cookie
+
+# configure email
+MYSQL_BATCH="mysql --user=root --password=$MYSQL_PASS --batch"
+$MYSQL_BATCH --database=wf_workflow --execute "INSERT INTO CONFIGURATION VALUES ('Emails', '', 'a:14:{s:13:\"MESS_PASSWORD\";s:0:\"\";s:20:\"MESS_PASSWORD_HIDDEN\";s:0:\"\";s:12:\"MESS_ENABLED\";s:1:\"1\";s:11:\"MESS_ENGINE\";s:9:\"PHPMAILER\";s:11:\"MESS_SERVER\";s:9:\"127.0.0.1\";s:10:\"MESS_RAUTH\";s:5:\"false\";s:9:\"MESS_PORT\";s:2:\"25\";s:12:\"MESS_ACCOUNT\";s:0:\"\";s:15:\"MESS_BACKGROUND\";s:0:\"\";s:18:\"MESS_EXECUTE_EVERY\";s:0:\"\";s:13:\"MESS_SEND_MAX\";s:0:\"\";s:10:\"SMTPSecure\";s:4:\"none\";s:7:\"MAIL_TO\";s:1:\" \";s:24:\"MESS_TRY_SEND_INMEDIATLY\";s:5:\"false\";}', '', '', '');"
+
+# change permissions on sensitive files
+chmod 640 $WEBROOT/shared/sites/workflow/db.php
+chmod 640 $WEBROOT/shared/sites/workflow/databases.php
+
+# stop services
+/etc/init.d/mysql stop
+/etc/init.d/apache2 stop
+
