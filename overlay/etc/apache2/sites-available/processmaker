@@ -1,0 +1,29 @@
+NameVirtualHost *:80
+NameVirtualHost *:443
+
+<VirtualHost *:80>
+    UseCanonicalName Off
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/processmaker/workflow/public_html
+</VirtualHost>
+
+<VirtualHost *:443>
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/cert.pem
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/processmaker/workflow/public_html
+</VirtualHost>
+
+<Directory /var/www/processmaker/workflow/public_html>
+    AddDefaultCharset UTF-8
+    Options +FollowSymLinks
+    AllowOverride All
+    order allow,deny
+    allow from all
+
+    RewriteEngine on
+    RewriteRule ^.*/(.*)$ sysGeneric.php [NC,L]
+
+    AddOutputFilterByType DEFLATE text/html
+</Directory>
+
