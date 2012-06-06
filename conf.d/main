@@ -6,3 +6,14 @@ ADMIN_PASS=turnkey
 SRC=/usr/local/src
 WEBROOT=/var/www/processmaker
 
+# unpack and set required permissions
+tar -zxf $SRC/processmaker-*.tar.gz -C $(dirname $WEBROOT)
+rm $SRC/processmaker-*.tar.gz
+chown -R www-data:www-data $WEBROOT
+chmod -R 770 $WEBROOT/shared
+chmod -R 770 $WEBROOT/workflow/engine/config
+chmod -R 770 $WEBROOT/workflow/engine/plugins
+chmod 770 $WEBROOT/workflow/engine/content/languages
+chmod 770 $WEBROOT/workflow/engine/js/labels
+chmod 770 $WEBROOT/workflow/engine/xmlform
+
