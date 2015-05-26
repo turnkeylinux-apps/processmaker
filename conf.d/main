@@ -27,6 +27,8 @@ a2enmod deflate
 /etc/init.d/mysql start
 /etc/init.d/apache2 start
 
+exit 1
+
 # curl based install
 P_CONFIG=$(echo $WEBROOT/workflow/engine/config/ | sed "s|\/|%2F|g")
 P_LANGUAGES=$(echo $WEBROOT/workflow/engine/content/languages/ | sed "s|\/|%2F|g")
