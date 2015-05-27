@@ -1,3 +1,16 @@
+turnkey-processmaker-14.0 (1) turnkey; urgency=low
+
+  * Upgraded to latest version of Processmaker.
+
+  * Upstream source component versions:
+
+    processmaker    3.0.0.1
+
+  * Note: Please refer to turnkey-core's changelog for changes common to all
+    appliances. Here we only describe changes specific to this appliance.
+
+ -- Stefan Davis <nafets.sivad@gmail.com>  Wed, 27 May 2015 01:33:55 +0000
+
 turnkey-processmaker-13.0 (1) turnkey; urgency=low
 
   * PHPMyAdmin:

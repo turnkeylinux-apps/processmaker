@@ -56,6 +56,7 @@ rm -f /tmp/cookie
 # configure email
 MYSQL_BATCH="mysql --user=root --password=$MYSQL_PASS --batch"
 $MYSQL_BATCH --database=wf_workflow --execute "INSERT INTO CONFIGURATION VALUES ('Emails', '', 'a:14:{s:13:\"MESS_PASSWORD\";s:0:\"\";s:20:\"MESS_PASSWORD_HIDDEN\";s:0:\"\";s:12:\"MESS_ENABLED\";s:1:\"1\";s:11:\"MESS_ENGINE\";s:9:\"PHPMAILER\";s:11:\"MESS_SERVER\";s:9:\"127.0.0.1\";s:10:\"MESS_RAUTH\";s:5:\"false\";s:9:\"MESS_PORT\";s:2:\"25\";s:12:\"MESS_ACCOUNT\";s:0:\"\";s:15:\"MESS_BACKGROUND\";s:0:\"\";s:18:\"MESS_EXECUTE_EVERY\";s:0:\"\";s:13:\"MESS_SEND_MAX\";s:0:\"\";s:10:\"SMTPSecure\";s:4:\"none\";s:7:\"MAIL_TO\";s:1:\" \";s:24:\"MESS_TRY_SEND_INMEDIATLY\";s:5:\"false\";}', '', '', '');"
+$MYSQL_BATCH --execute "grant all privileges on wf_workflow.* to wf_workflow@localhost; flush privileges;"
 
 # change permissions on sensitive files
 chmod 640 $WEBROOT/shared/sites/workflow/db.php
