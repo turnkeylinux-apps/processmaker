@@ -57,9 +57,9 @@ def main():
 
     m = MySQL()
 
-    for database in ('wf_workflow', 'rb_workflow'):
-        m.execute('UPDATE %s.USERS SET USR_PASSWORD=\"%s\" WHERE USR_USERNAME=\"admin\";' % (database, hashpass))
-        m.execute('UPDATE %s.USERS SET USR_EMAIL=\"%s\" WHERE USR_USERNAME=\"admin\";' % (database, email))
+    for table in ('USERS', 'RBAC_USERS'):
+        m.execute('UPDATE wf_workflow.%s SET USR_PASSWORD=\"%s\" WHERE USR_USERNAME=\"admin\";' % (table, hashpass))
+        m.execute('UPDATE wf_workflow.%s SET USR_EMAIL=\"%s\" WHERE USR_USERNAME=\"admin\";' % (table, email))
 
 
 if __name__ == "__main__":
