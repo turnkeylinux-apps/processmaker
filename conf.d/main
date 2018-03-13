@@ -6,6 +6,13 @@ ADMIN_PASS=turnkey
 SRC=/usr/local/src
 WEBROOT=/var/www/processmaker
 
+###Config Vars
+DB_NAME=processmaker
+DB_USER=processmaker
+DB_PASS=$(mcookie)
+
+
+
 # unpack and set required permissions
 tar -zxf $SRC/processmaker-*.tar.gz -C $(dirname $WEBROOT)
 rm $SRC/processmaker-*.tar.gz
@@ -24,8 +31,11 @@ a2enmod rewrite
 a2enmod deflate
 
 # start services
-/etc/init.d/mysql start
-/etc/init.d/apache2 start
+service mysql start
+service apache2 start
+
+#Create mysql user and table
+mysql --user=root --password=$MYSQL_PASS --batch --execute "GRANT ALL PRIVILEGES  ON *.* TO $DB_USER@localhost IDENTIFIED BY '$DB_PASS'; FLUSH PRIVILEGES;"
 
 
 # curl based install
@@ -40,8 +50,8 @@ P_TRANS=$(echo $WEBROOT/workflow/engine/js/labels/ | sed "s|\/|%2F|g")
 P_TRANSMAFE=$(echo $WEBROOT/workflow/public_html/translations/ | sed "s|\/|%2F|g")
 
 P_PATHS="pathConfig=$P_CONFIG&pathLanguages=$P_LANGUAGES&pathPlugins=$P_PLUGINS&pathXmlforms=$P_XMLFORMS&pathShared=$P_SHARED&pathLogFile=$P_LOGFILE&pathPublic=$P_PUBLIC&pathTranslations=$P_TRANS&pathTranslationsMafe=$P_TRANSMAFE"
-P_DBCONN="db_engine=mysql&db_hostname=localhost&db_username=root&db_password=$MYSQL_PASS&db_port=3306"
-P_DBBASE="wfDatabase=wf_workflow&rbDatabase=rb_workflow&rpDatabase=rp_workflow"
+P_DBCONN="db_engine=mysql&db_hostname=localhost&db_username=$DB_USER&db_password=$DB_PASS&db_port=3306"
+P_DBBASE="wfDatabase=wf_workflow&rbDatabase=rb_workflow&rpDatabase=rp_workflow&deleteDB=true&userLogged=true"
 
 URL="http://127.0.0.1/sys/en/classic/login"
 CURL="curl -c /tmp/cookie -b /tmp/cookie"
@@ -52,20 +62,30 @@ $CURL ${URL}/getPermissionInfo --data "$P_PATHS"
 $CURL ${URL}/getEngines --data ""
 $CURL ${URL}/testConnection --data "$P_DBCONN"
 $CURL ${URL}/checkDatabases --data "$P_DBCONN&$P_DBBASE"
-$CURL ${URL}/createWorkspace --data "$P_PATHS&$P_DBCONN&$P_DBBASE&workspace=workflow&adminUsername=$ADMIN_NAME&adminPassword=$ADMIN_PASS&deleteDB=false"
-
+$CURL ${URL}/createWorkspace --data "$P_PATHS&$P_DBCONN&$P_DBBASE&workspace=workflow&adminUsername=$ADMIN_NAME&adminPassword=$ADMIN_PASS&deleteDB=true&userLogged=true"
 rm -f /tmp/cookie
 
 # configure email
 MYSQL_BATCH="mysql --user=root --password=$MYSQL_PASS --batch"
 $MYSQL_BATCH --database=wf_workflow --execute "INSERT INTO CONFIGURATION VALUES ('Emails', '', 'a:14:{s:13:\"MESS_PASSWORD\";s:0:\"\";s:20:\"MESS_PASSWORD_HIDDEN\";s:0:\"\";s:12:\"MESS_ENABLED\";s:1:\"1\";s:11:\"MESS_ENGINE\";s:9:\"PHPMAILER\";s:11:\"MESS_SERVER\";s:9:\"127.0.0.1\";s:10:\"MESS_RAUTH\";s:5:\"false\";s:9:\"MESS_PORT\";s:2:\"25\";s:12:\"MESS_ACCOUNT\";s:0:\"\";s:15:\"MESS_BACKGROUND\";s:0:\"\";s:18:\"MESS_EXECUTE_EVERY\";s:0:\"\";s:13:\"MESS_SEND_MAX\";s:0:\"\";s:10:\"SMTPSecure\";s:4:\"none\";s:7:\"MAIL_TO\";s:1:\" \";s:24:\"MESS_TRY_SEND_INMEDIATLY\";s:5:\"false\";}', '', '', '');"
-#$MYSQL_BATCH --execute "grant all privileges on wf_workflow.* to wf_workflow@localhost; flush privileges;"
 
 # change permissions on sensitive files
 chmod 640 $WEBROOT/shared/sites/workflow/db.php
 chmod 640 $WEBROOT/shared/sites/workflow/databases.php
 
+cd $WEBROOT
+yes | php processmaker  upgrade
+
+chown -R www-data:www-data $WEBROOT
+chmod -R 770 $WEBROOT/shared
+chmod -R 770 $WEBROOT/workflow/engine/config
+chmod -R 770 $WEBROOT/workflow/engine/plugins
+chmod 770 $WEBROOT/workflow/engine/content/languages
+chmod 770 $WEBROOT/workflow/engine/js/labels
+chmod 770 $WEBROOT/workflow/engine/xmlform
+
+
 # stop services
-/etc/init.d/mysql stop
-/etc/init.d/apache2 stop
+service mysql stop
+service apache2 stop
 
