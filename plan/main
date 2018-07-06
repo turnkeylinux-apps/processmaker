@@ -1,5 +1,5 @@
 #include <turnkey/base>
-#include <turnkey/lamp>
+#include <turnkey/lamp56>
 
 php5.6-gd
 php5.6-cli
