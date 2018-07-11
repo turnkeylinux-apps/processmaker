@@ -1,6 +1,6 @@
 turnkey-processmaker-15.0 (1) turnkey; urgency=low
 
-  * Updated Processmaker to latest upstream version.
+  * Updated Processmaker to latest upstream version (v3.2.1).
 
   * Install Adminer directly from stretch/main repo
 
