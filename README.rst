@@ -14,6 +14,11 @@ and on top of that:
    
    - Installed from upstream source code to /var/www/processmaker
 
+     **Security note**: Updates to ProcessMaker may require supervision so
+     they **ARE NOT** configured to install automatically. See `ProcessMaker
+     documentation`_ for upgrading (please note link is to 3.2 upgrade - 
+     please adjust as per version you are upgrading to).
+
 - SSL support out of the box.
 - `Adminer`_ administration frontend for MySQL (listening on port
    12322 - uses SSL).
@@ -31,4 +36,5 @@ Credentials *(passwords set at first boot)*
 
 .. _ProcessMaker: http://www.processmaker.com/
 .. _TurnKey Core: https://www.turnkeylinux.org/core
+.. _ProcessMaker documentation: https://wiki.processmaker.com/3.2/Upgrading_ProcessMaker
 .. _Adminer: http://www.adminer.org/
