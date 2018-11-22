@@ -1,12 +1,12 @@
 #include <turnkey/base>
-#include <turnkey/lamp56>
+#include <turnkey/lamp>
 
-php5.6-gd
-php5.6-cli
-php5.6-curl
-php5.6-ldap
-php5.6-mcrypt
-php5.6-xml
-php5.6-mbstring
-php5.6-soap
-php5.6-mssql
+php-gd
+php-cli
+php-curl
+php-ldap
+php-mcrypt
+php-xml
+php-mbstring
+php-soap
+php-mssql

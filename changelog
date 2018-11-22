@@ -1,3 +1,14 @@
+turnkey-processmaker-15.1 (1) turnkey; urgency=low
+
+  * Updated Processmaker to latest upstream version (v3.3.0).
+
+  * Now uses PHP7.0 (installed from Debian repos).
+
+  * Rebuild to resolve inadvertent removal of mariadb during sec-updates
+    - part of #1246.
+
+ -- Jeremy Davis <jeremy@turnkeylinux.org>  Thu, 22 Nov 2018 14:33:43 +1100
+
 turnkey-processmaker-15.0 (1) turnkey; urgency=low
 
   * Updated Processmaker to latest upstream version (v3.2.1).
