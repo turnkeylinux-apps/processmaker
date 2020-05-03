@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """Set ProcessMaker admin password and email
 
 Option:
@@ -17,16 +17,16 @@ from mysqlconf import MySQL
 
 def usage(s=None):
     if s:
-        print >> sys.stderr, "Error:", s
-    print >> sys.stderr, "Syntax: %s [options]" % sys.argv[0]
-    print >> sys.stderr, __doc__
+        print("Error:", s, file=sys.stderr)
+    print("Syntax: %s [options]" % sys.argv[0], file=sys.stderr)
+    print(__doc__, file=sys.stderr)
     sys.exit(1)
 
 def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h",
                                        ['help', 'pass=', 'email='])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         usage(e)
 
     password = ""
@@ -56,13 +56,13 @@ def main():
 
     inithooks_cache.write('APP_EMAIL', email)
 
-    hashpass = hashlib.md5(password).hexdigest()
+    hashpass = hashlib.md5(password.encode('utf8')).hexdigest()
 
     m = MySQL()
 
     for table in ('USERS', 'RBAC_USERS'):
-        m.execute('UPDATE wf_workflow.%s SET USR_PASSWORD=\"%s\" WHERE USR_USERNAME=\"admin\";' % (table, hashpass))
-        m.execute('UPDATE wf_workflow.%s SET USR_EMAIL=\"%s\" WHERE USR_USERNAME=\"admin\";' % (table, email))
+        m.execute(f'UPDATE wf_workflow.{table} SET USR_PASSWORD=%s WHERE USR_USERNAME=\"admin\";', (hashpass,))
+        m.execute(f'UPDATE wf_workflow.{table} SET USR_EMAIL=%s WHERE USR_USERNAME=\"admin\";', (email,))
 
 
 if __name__ == "__main__":

@@ -5,7 +5,6 @@ php-gd
 php-cli
 php-curl
 php-ldap
-php-mcrypt
 php-xml
 php-mbstring
 php-soap
