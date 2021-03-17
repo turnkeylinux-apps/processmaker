@@ -1,3 +1,12 @@
+turnkey-processmaker-16.0 (2) UNRELEASED; urgency=medium
+
+  * Updated Processmaker to latest upstream version - v3.5.4.
+
+  * Note: Please refer to turnkey-core's changelog for changes common to all
+    appliances. Here we only describe changes specific to this appliance.
+
+ -- Stefan Davis <stefan@turnkeylinux.org>  Tue, 16 Mar 2021 19:56:32 +1100
+
 turnkey-processmaker-16.0 (1) turnkey; urgency=low
 
   * Updated Processmaker to latest upstream version - v3.4.11.
